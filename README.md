@@ -8,25 +8,13 @@ To write a program to implement the Decision Tree Regressor Model for Predicting
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1.Start the program.
+1.Load the dataset and separate input feature (Level) and target variable (Salary).
 
-2.Import required libraries like pandas and sklearn.
+2.Split the dataset into training and testing sets.
 
-3.Read the Salary.csv dataset.
+3.Train a Decision Tree Regressor model using the training data.
 
-4.Check dataset using head(), info(), and isnull().
-
-5.Convert the Position column into numerical values using LabelEncoder.
-
-6.Select Position and Level as input features (X).
-
-7.Select Salary as output variable (Y).
-
-8.Split the dataset into training and testing data.
-
-9.Train the Decision Tree Regressor model using training data.
-
-10.Predict salary using test data and calculate R² score to check performance. 
+4.Predict salary values and evaluate model performance using error metrics.
 ## Program:
 ```
 /*
@@ -35,42 +23,69 @@ Developed by: kamaleshkumar k
 RegisterNumber: 25012000
 */
 import pandas as pd
-data = pd.read_csv("Salary.csv")
+import numpy as np
+import matplotlib.pyplot as plt
 
-data.head()
-data.info()
-data.isnull().sum()
-
-from sklearn.preprocessing import LabelEncoder
-le = LabelEncoder()
-data["Position"] = le.fit_transform(data["Position"])
-
-data.head()
-
-x = data[["Position", "Level"]]
-x.head()
-
-y = data["Salary"]
-y.head()
-
+from sklearn.tree import DecisionTreeRegressor, plot_tree
 from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from sklearn.tree import DecisionTreeRegressor
-dt = DecisionTreeRegressor()
-dt.fit(x_train, y_train)
 
-y_pred = dt.predict(x_test)
-y_pred
 
-from sklearn import metrics
-r2 = metrics.r2_score(y_test, y_pred)
-r2
+df = pd.read_csv(r"C:\Users\acer\Downloads\Salary.csv")
+
+X = df[["Level"]].values
+y = df["Salary"].values
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+model = DecisionTreeRegressor(
+    criterion="squared_error",
+    max_depth=3,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+
+print("MAE :", mae)
+print("MSE :", mse)
+print("RMSE:", rmse)
+print("R2  :", r2)
+
+
+plt.figure(figsize=(16, 10))
+plot_tree(
+    model,
+    feature_names=["Level"],
+    filled=True,
+    rounded=True
+)
+plt.title("Decision Tree Regressor for Employee Salary Prediction")
+plt.show()
+
+
+new_exp = [[5]]
+predicted_salary = model.predict(new_exp)
+
+print("Predicted Salary for 5 years experience:", predicted_salary[0])
 
 ```
 
 ## Output:
-<img width="728" height="257" alt="555183407-42ed7234-5150-4ec3-b695-7655f24d3429" src="https://github.com/user-attachments/assets/6445f9c6-8993-44b9-a715-9c7cb2867c7c" />
+<img width="1246" height="100" alt="560148141-0029e89f-075c-464d-b4ed-df7c2c1d7017" src="https://github.com/user-attachments/assets/03be4a33-4ae8-4fcf-836a-e3073f0f2feb" />
+<img width="1240" height="690" alt="560148219-c3436ff3-df74-45e0-8fa1-5e46ef4bb81f" src="https://github.com/user-attachments/assets/2a8bd249-9f4f-40ef-a44d-a71925872643" />
+
 
 
 ## Result:
